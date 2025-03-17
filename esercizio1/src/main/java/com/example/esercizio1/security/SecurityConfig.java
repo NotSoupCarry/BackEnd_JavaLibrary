@@ -66,8 +66,7 @@ public class SecurityConfig {
                 // accessibili a tutti
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/css/**", "/js/**").permitAll()
-                        .requestMatchers("/libri").permitAll()
-                        .requestMatchers("/autori").permitAll()
+                        .requestMatchers("/home").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN") // Accesso solo per admin
                         .anyRequest().authenticated())
                 // Configuriamo il form di login
@@ -80,9 +79,9 @@ public class SecurityConfig {
                             if (authentication.getAuthorities().stream()
                                     .anyMatch(
                                             grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
-                                targetUrl = "/admin/libri"; // Redirect to /admin/eventi for ADMIN
+                                targetUrl = "/admin/home"; // Redirect to /admin/eventi for ADMIN
                             } else {
-                                targetUrl = "/libri"; // Redirect to /libri for regular users (ROLE_USER)
+                                targetUrl = "/home"; // Redirect to /libri for regular users (ROLE_USER)
                             }
                             response.sendRedirect(targetUrl);
                         })

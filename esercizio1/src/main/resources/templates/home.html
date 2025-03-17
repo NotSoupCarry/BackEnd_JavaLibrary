@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home - Libreria</title>
+</head>
+<body>
+    <h1>Benvenuto alla libreria</h1>
+
+    <h2>Autori</h2>
+    <div th:if="${autori.hasContent()}">
+        <ul>
+            <li th:each="autore : ${autori.content}">
+                <span th:text="${autore.nome} + ' ' + ${autore.cognome}"></span>
+            </li>
+        </ul>
+
+        <!-- Paginazione per autori -->
+        <div>
+            <span th:if="${autori.hasPrevious()}">
+                <a th:href="@{/home(page=${autori.number - 1}, size=${autori.size})}">Precedente</a>
+            </span>
+            <span th:if="${autori.hasNext()}">
+                <a th:href="@{/home(page=${autori.number + 1}, size=${autori.size})}">Successivo</a>
+            </span>
+        </div>
+    </div>
+    <div th:if="${!autori.hasContent()}">
+        <p>Non ci sono autori.</p>
+    </div>
+
+    <h2>Libri</h2>
+    <div th:if="${libri.hasContent()}">
+        <ul>
+            <li th:each="libro : ${libri.content}">
+                <span th:text="${libro.titolo}"></span> - <span th:text="${libro.autore.nome} + ' ' + ${libro.autore.cognome}"></span>
+            </li>
+        </ul>
+
+        <!-- Paginazione per libri -->
+        <div>
+            <span th:if="${libri.hasPrevious()}">
+                <a th:href="@{/home(page=${libri.number - 1}, size=${libri.size})}">Precedente</a>
+            </span>
+            <span th:if="${libri.hasNext()}">
+                <a th:href="@{/home(page=${libri.number + 1}, size=${libri.size})}">Successivo</a>
+            </span>
+        </div>
+    </div>
+    <div th:if="${!libri.hasContent()}">
+        <p>Non ci sono libri.</p>
+    </div>
+</body>
+</html>

@@ -1,5 +1,7 @@
 package com.example.esercizio1.controllers;
 
+import com.example.esercizio1.DTO.AutoreDTO;
+import com.example.esercizio1.mappers.AutoreMapper;
 import com.example.esercizio1.models.Autore;
 import com.example.esercizio1.services.AutoreService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,9 +26,10 @@ public class AutoreController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Ottieni tutti gli autori", description = "Ritorna una lista di autori con paginazione e ordinamento")
     @ApiResponse(responseCode = "200", description = "Lista di autori recuperata con successo")
-    public ResponseEntity<Page<Autore>> getAllAutori(Pageable pageable) {
+    public ResponseEntity<Page<AutoreDTO>> getAllAutori(Pageable pageable) {
         Page<Autore> autori = autoreService.getAllAutori(pageable);
-        return ResponseEntity.ok(autori);
+        Page<AutoreDTO> autoreDTOs = autori.map(AutoreMapper::toDTO);
+        return ResponseEntity.ok(autoreDTOs);
     }
 
     @GetMapping("/{id}")
@@ -34,16 +37,19 @@ public class AutoreController {
     @Operation(summary = "Ottieni un autore per ID", description = "Ritorna un autore specifico in base all'ID")
     @ApiResponse(responseCode = "200", description = "Autore trovato")
     @ApiResponse(responseCode = "404", description = "Autore non trovato")
-    public ResponseEntity<Autore> getAutoreById(@PathVariable Long id) {
-        return ResponseEntity.ok(autoreService.getAutoreById(id));
+    public ResponseEntity<AutoreDTO> getAutoreById(@PathVariable Long id) {
+        Autore autore = autoreService.getAutoreById(id);
+        return ResponseEntity.ok(AutoreMapper.toDTO(autore));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")  // Solo gli utenti con il ruolo 'ADMIN' possono aggiungere autori
     @Operation(summary = "Aggiungi un nuovo autore", description = "Salva un nuovo autore nel database")
     @ApiResponse(responseCode = "201", description = "Autore creato con successo")
-    public ResponseEntity<Autore> addAutore(@RequestBody Autore autore) {
-        return ResponseEntity.ok(autoreService.addAutore(autore));
+    public ResponseEntity<AutoreDTO> addAutore(@RequestBody AutoreDTO autoreDTO) {
+        Autore autore = AutoreMapper.toEntity(autoreDTO);
+        autore = autoreService.addAutore(autore);
+        return ResponseEntity.ok(AutoreMapper.toDTO(autore));
     }
 
     @PutMapping("/{id}")
@@ -51,8 +57,11 @@ public class AutoreController {
     @Operation(summary = "Modifica un autore", description = "Aggiorna i dettagli di un autore esistente")
     @ApiResponse(responseCode = "200", description = "Autore aggiornato con successo")
     @ApiResponse(responseCode = "404", description = "Autore non trovato")
-    public ResponseEntity<Autore> updateAutore(@PathVariable Long id, @RequestBody Autore autoreDetails) {
-        return ResponseEntity.ok(autoreService.updateAutore(id, autoreDetails));
+    public ResponseEntity<AutoreDTO> updateAutore(@PathVariable Long id, @RequestBody AutoreDTO autoreDTO) {
+        Autore autoreDetails = AutoreMapper.toEntity(autoreDTO);
+        autoreDetails.setId(id);
+        Autore updatedAutore = autoreService.updateAutore(id, autoreDetails);
+        return ResponseEntity.ok(AutoreMapper.toDTO(updatedAutore));
     }
 
     @DeleteMapping("/{id}")
