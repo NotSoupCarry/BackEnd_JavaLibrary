@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Aggiungi Libro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+    <header class="bg-blue-600 text-white p-4 text-center">
+        <h1 class="text-3xl font-bold">Aggiungi Libro</h1>
+    </header>
+
+    <main class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-6">
+
+        <!-- Form di aggiunta del libro -->
+        <form th:action="@{/admin/libri/add}" th:object="${libro}" method="post">
+            <div class="mb-4">
+                <label for="titolo" class="block text-lg font-medium text-gray-700">Titolo</label>
+                <input type="text" th:field="*{titolo}" id="titolo" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            </div>
+
+            <div class="mb-4">
+                <label for="genere" class="block text-lg font-medium text-gray-700">Genere</label>
+                <input type="text" th:field="*{genere}" id="genere" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            </div>
+
+            <div class="mb-4">
+                <label for="annoPubblicazione" class="block text-lg font-medium text-gray-700">Anno di Pubblicazione</label>
+                <input type="number" th:field="*{annoPubblicazione}" id="annoPubblicazione" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            </div>
+
+            <!-- Dropdown per selezionare l'autore -->
+            <div class="mb-4">
+                <label for="autore" class="block text-lg font-medium text-gray-700">Autore</label>
+                <select th:field="*{autore}" id="autore" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="" disabled selected>Seleziona un autore</option>
+                    <!-- Ciclo sugli autori passati nel modello -->
+                    <option th:each="autore : ${autori}" th:value="${autore.id}" th:text="${autore.nome} + ' ' + ${autore.cognome}"></option>
+                </select>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Aggiungi Libro
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-6 text-center">
+            <a href="/admin/home" class="text-blue-600 hover:text-blue-800">Torna alla lista</a>
+        </div>
+
+    </main>
+
+</body>
+</html>

@@ -31,6 +31,6 @@ public class UserPagesController {
         model.addAttribute("libri", libri);
 
         // Restituiamo il nome della pagina thymeleaf da visualizzare
-        return "home"; // Il file Thymeleaf sarà home.html
+        return "home"; 
     }
 }

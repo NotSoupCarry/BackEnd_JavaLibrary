@@ -1,53 +1,98 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
 <head>
     <title>Home - Libreria</title>
+    <!-- Importa Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Benvenuto alla libreria</h1>
 
-    <h2>Autori</h2>
-    <div th:if="${autori.hasContent()}">
-        <ul>
-            <li th:each="autore : ${autori.content}">
-                <span th:text="${autore.nome} + ' ' + ${autore.cognome}"></span>
-            </li>
-        </ul>
+<body class="bg-gray-100 text-gray-800 font-sans">
 
-        <!-- Paginazione per autori -->
-        <div>
-            <span th:if="${autori.hasPrevious()}">
-                <a th:href="@{/home(page=${autori.number - 1}, size=${autori.size})}">Precedente</a>
-            </span>
-            <span th:if="${autori.hasNext()}">
-                <a th:href="@{/home(page=${autori.number + 1}, size=${autori.size})}">Successivo</a>
-            </span>
+    <!-- Header -->
+    <header class="bg-blue-600 text-white p-4 text-center">
+        <h1 class="text-3xl font-bold">Benvenuto alla libreria</h1>
+    </header>
+
+    <!-- Contenitore principale -->
+    <main class="max-w-7xl mx-auto p-4">
+
+        <!-- Authentication Links -->
+        <div class="text-center">
+            <!-- If the user is authenticated, show logout and other options -->
+            <div sec:authorize="isAuthenticated()">
+                <h2 class="font-medium">Benvenuto, <span class="text-green-600"
+                        th:text="${#authentication.name}"></span></h2>
+                <br>
+                <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mb-4">
+                    <a th:href="@{/auth/logout}">Logout</a>
+                </button>
+
+            </div>
+
+            <!-- If the user is not authenticated, show login link -->
+            <div sec:authorize="!isAuthenticated()">
+                <p class="text-lg text-gray-700 mb-4">Effettua il login</p>
+                <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-4">
+                    <a th:href="@{/auth/login}">Login</a>
+                </button>
+            </div>
         </div>
-    </div>
-    <div th:if="${!autori.hasContent()}">
-        <p>Non ci sono autori.</p>
-    </div>
 
-    <h2>Libri</h2>
-    <div th:if="${libri.hasContent()}">
-        <ul>
-            <li th:each="libro : ${libri.content}">
-                <span th:text="${libro.titolo}"></span> - <span th:text="${libro.autore.nome} + ' ' + ${libro.autore.cognome}"></span>
-            </li>
-        </ul>
+        <!-- Sezione Autori -->
+        <section class="my-8">
+            <h2 class="text-2xl font-semibold mb-4">Autori</h2>
+            <div th:if="${autori.hasContent()}">
+                <ul class="space-y-2">
+                    <li th:each="autore : ${autori.content}" class="bg-white p-4 rounded-lg shadow-lg">
+                        <span th:text="${autore.nome} + ' ' + ${autore.cognome}" class="text-lg"></span>
+                    </li>
+                </ul>
 
-        <!-- Paginazione per libri -->
-        <div>
-            <span th:if="${libri.hasPrevious()}">
-                <a th:href="@{/home(page=${libri.number - 1}, size=${libri.size})}">Precedente</a>
-            </span>
-            <span th:if="${libri.hasNext()}">
-                <a th:href="@{/home(page=${libri.number + 1}, size=${libri.size})}">Successivo</a>
-            </span>
-        </div>
-    </div>
-    <div th:if="${!libri.hasContent()}">
-        <p>Non ci sono libri.</p>
-    </div>
+                <!-- Paginazione per autori -->
+                <div class="mt-4 flex justify-between">
+                    <span th:if="${autori.hasPrevious()}" class="text-blue-600 hover:underline">
+                        <a th:href="@{/home(page=${autori.number - 1}, size=${autori.size})}">Precedente</a>
+                    </span>
+                    <span th:if="${autori.hasNext()}" class="text-blue-600 hover:underline">
+                        <a th:href="@{/home(page=${autori.number + 1}, size=${autori.size})}">Successivo</a>
+                    </span>
+                </div>
+            </div>
+            <div th:if="${!autori.hasContent()}">
+                <p class="text-gray-600">Non ci sono autori.</p>
+            </div>
+        </section>
+
+        <!-- Sezione Libri -->
+        <section class="my-8">
+            <h2 class="text-2xl font-semibold mb-4">Libri</h2>
+            <div th:if="${libri.hasContent()}">
+                <ul class="space-y-2">
+                    <li th:each="libro : ${libri.content}" class="bg-white p-4 rounded-lg shadow-lg">
+                        <span th:text="${libro.titolo}" class="font-semibold"></span> -
+                        <span th:text="${libro.autore.nome} + ' ' + ${libro.autore.cognome}"
+                            class="text-gray-600"></span>
+                    </li>
+                </ul>
+
+                <!-- Paginazione per libri -->
+                <div class="mt-4 flex justify-between">
+                    <span th:if="${libri.hasPrevious()}" class="text-blue-600 hover:underline">
+                        <a th:href="@{/home(page=${libri.number - 1}, size=${libri.size})}">Precedente</a>
+                    </span>
+                    <span th:if="${libri.hasNext()}" class="text-blue-600 hover:underline">
+                        <a th:href="@{/home(page=${libri.number + 1}, size=${libri.size})}">Successivo</a>
+                    </span>
+                </div>
+            </div>
+            <div th:if="${!libri.hasContent()}">
+                <p class="text-gray-600">Non ci sono libri.</p>
+            </div>
+        </section>
+
+    </main>
+
 </body>
+
 </html>

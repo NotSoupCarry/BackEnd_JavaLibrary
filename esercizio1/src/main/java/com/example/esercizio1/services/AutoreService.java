@@ -4,6 +4,8 @@ import com.example.esercizio1.models.Autore;
 import com.example.esercizio1.repositories.AutoreRepository;
 import com.example.esercizio1.websocket.AutoreWebSocketHandler;
 
+import java.util.List;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -25,6 +27,10 @@ public class AutoreService {
     @Cacheable(value = "autori", key = "#pageable.pageNumber + '_' + #pageable.pageSize")
     public Page<Autore> getAllAutori(Pageable pageable) {
         return autoreRepository.findAll(pageable);
+    }
+
+    public List<Autore> getListAllAutori(){
+        return autoreRepository.findAll();
     }
 
     // Ottieni un autore per ID

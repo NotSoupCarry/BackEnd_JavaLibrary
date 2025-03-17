@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Home</title>
+    <!-- Importa Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+    <!-- Header -->
+    <header class="bg-blue-600 text-white p-4 text-center">
+        <h1 class="text-3xl font-bold">Pannello Amministratore</h1>
+    </header>
+
+    <!-- Contenitore principale -->
+    <main class="max-w-7xl mx-auto p-6">
+
+        <!-- Authentication Links -->
+        <div class="text-center">
+            <!-- If the user is authenticated, show logout and other options -->
+            <div sec:authorize="isAuthenticated()">
+                <h2 class="font-medium">Benvenuto, <span class="text-green-600"
+                        th:text="${#authentication.name}"></span></h2>
+                <br>
+                <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mb-4">
+                    <a th:href="@{/auth/logout}">Logout</a>
+                </button>
+            </div>
+        </div>
+
+        <!-- Sezione Libri -->
+        <section class="my-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold">Libri</h2>
+                <a href="/admin/libri/add" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                    Aggiungi Libro
+                </a>
+            </div>
+            <table class="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
+                <thead class="bg-blue-600 text-white">
+                    <tr>
+                        <th class="p-2 text-left">Titolo</th>
+                        <th class="p-2 text-left">Genere</th>
+                        <th class="p-2 text-left">Anno Pubblicazione</th>
+                        <th class="p-2 text-left">Autore</th>
+                        <th class="p-2 text-left">Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="libro : ${libri.content}" class="border-b hover:bg-gray-50">
+                        <td class="p-2" th:text="${libro.titolo}"></td>
+                        <td class="p-2" th:text="${libro.genere}"></td>
+                        <td class="p-2" th:text="${libro.annoPubblicazione}"></td>
+                        <td class="p-2" th:text="${libro.autore.nome}"></td>
+                        <td class="p-2">
+                            <a th:href="@{/admin/libri/edit/{id}(id=${libro.id})}" class="text-blue-600 hover:text-blue-800">Modifica</a> |
+                            <a th:href="@{/admin/libri/delete/{id}(id=${libro.id})}" class="text-red-600 hover:text-red-800">Elimina</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Paginazione per libri -->
+            <div class="mt-4 flex justify-between items-center">
+                <div>
+                    <a th:href="@{/admin/home(page=${currentPage - 1}, size=${size})}" th:disabled="${currentPage == 0}" class="text-blue-600 hover:text-blue-800 disabled:opacity-50">Precedente</a>
+                </div>
+                <div class="text-center">
+                    <span>Pagina <span th:text="${currentPage + 1}"></span> di <span th:text="${totalPagesLibri}"></span></span>
+                </div>
+                <div>
+                    <a th:href="@{/admin/home(page=${currentPage + 1}, size=${size})}" th:disabled="${currentPage == totalPagesLibri - 1}" class="text-blue-600 hover:text-blue-800 disabled:opacity-50">Successivo</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sezione Autori -->
+        <section class="my-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold">Autori</h2>
+                <a href="/admin/autori/add" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                    Aggiungi Autore
+                </a>
+            </div>
+            <table class="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
+                <thead class="bg-blue-600 text-white">
+                    <tr>
+                        <th class="p-2 text-left">Nome</th>
+                        <th class="p-2 text-left">Cognome</th>
+                        <th class="p-2 text-left">Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="autore : ${autori.content}" class="border-b hover:bg-gray-50">
+                        <td class="p-2" th:text="${autore.nome}"></td>
+                        <td class="p-2" th:text="${autore.cognome}"></td>
+                        <td class="p-2">
+                            <a th:href="@{/admin/autori/edit/{id}(id=${autore.id})}" class="text-blue-600 hover:text-blue-800">Modifica</a> |
+                            <a th:href="@{/admin/autori/delete/{id}(id=${autore.id})}" class="text-red-600 hover:text-red-800">Elimina</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Paginazione per autori -->
+            <div class="mt-4 flex justify-between items-center">
+                <div>
+                    <a th:href="@{/admin/home(page=${currentPage - 1}, size=${size})}" th:disabled="${currentPage == 0}" class="text-blue-600 hover:text-blue-800 disabled:opacity-50">Precedente</a>
+                </div>
+                <div class="text-center">
+                    <span>Pagina <span th:text="${currentPage + 1}"></span> di <span th:text="${totalPagesAutori}"></span></span>
+                </div>
+                <div>
+                    <a th:href="@{/admin/home(page=${currentPage + 1}, size=${size})}" th:disabled="${currentPage == totalPagesAutori - 1}" class="text-blue-600 hover:text-blue-800 disabled:opacity-50">Successivo</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>
