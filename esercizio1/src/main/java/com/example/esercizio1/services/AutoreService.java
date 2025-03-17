@@ -2,6 +2,7 @@ package com.example.esercizio1.services;
 
 import com.example.esercizio1.models.Autore;
 import com.example.esercizio1.repositories.AutoreRepository;
+import com.example.esercizio1.websocket.AutoreWebSocketHandler;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 
 @Service
 @RequiredArgsConstructor
@@ -51,5 +53,13 @@ public class AutoreService {
     @CacheEvict(value = "autori", key = "#id")
     public void deleteAutore(Long id) {
         autoreRepository.deleteById(id);
+    }
+
+    private final AutoreWebSocketHandler autoreWebSocketHandler;
+
+    @Async
+    public void notifyOnNewLibro(Autore autore) {
+        String message = "Nuovo Autore aggiunto: " + autore.getNome();
+        autoreWebSocketHandler.sendNotification(message);
     }
 }
